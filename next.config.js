@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  env: {
+    CLOUDINARY_URL: 'https://api.cloudinary.com/v1_1/dazod14rs/image/upload',
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
