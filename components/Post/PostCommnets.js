@@ -1,4 +1,5 @@
 import calculateTime from '@/utils/calculateTime';
+import { deleteComment } from '@/utils/postActions';
 import React, { useState } from 'react';
 import { Comment, Icon } from 'semantic-ui-react';
 
@@ -21,7 +22,10 @@ const PostCommnets = ({ comment, user, setComments, postId }) => {
           <Comment.Text>{comment.text}</Comment.Text>
           <Comment.Actions>
             {(user.role === 'root' || comment.user._id === user._id) && (
-              <Icon disabled={disabled} color='red' name='trash alternate' />
+              <Icon style={{cursor:"pointer"}} disabled={disabled} color='red' name='trash alternate' onClick={async()=>{
+              setDisabled(true)
+              await deleteComment(postId,comment._id,setComments)
+              setDisabled(false)}} />
             )}
           </Comment.Actions>
         </Comment.Content>
