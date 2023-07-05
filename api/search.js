@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/:searchText', authMiddleware, async (req, res) => {
-  const searchText = req.params;
+  const { searchText } = req.params;
   if (searchText.length === 0) {
     return;
   }

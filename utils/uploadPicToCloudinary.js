@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+require('dotenv').config({ path: './config.env' });
 const uploadPic = async (media) => {
   try {
     const form = new FormData();
@@ -8,7 +8,8 @@ const uploadPic = async (media) => {
     form.append('cloud_name', 'dazod14rs');
 
     const res = await axios.post(process.env.CLOUDINARY_URL, form);
-    return ReadableStreamDefaultReader.url;
+    console.log(res);
+    return res.data.secure_url;
   } catch (error) {
     return;
   }

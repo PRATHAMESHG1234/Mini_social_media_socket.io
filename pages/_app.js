@@ -1,4 +1,5 @@
 import React from 'react';
+import 'react-toastify/dist/ReactToastify.css';
 import 'semantic-ui-css/semantic.min.css';
 import Layout from '@/components/Layout/layout';
 import { destroyCookie, parseCookies } from 'nookies';

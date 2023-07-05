@@ -54,7 +54,7 @@ function Layout({ children, user }) {
                   </Sticky>
                 </Grid.Column>
                 <Grid.Column width={10}>
-                  <Visibility context={contextRef}></Visibility>
+                  <Visibility context={contextRef}>{children}</Visibility>
                 </Grid.Column>
                 <Grid.Column floated='left' width={4}>
                   <Sticky context={contextRef}>
