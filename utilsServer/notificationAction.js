@@ -63,7 +63,6 @@ const newCommentNotification = async (
 	userToNotifyId,
 	text,
 ) => {
-	console.log('we get call');
 	try {
 		let userToNotify = await NotificationModel.findOne({
 			user: userToNotifyId,
@@ -84,7 +83,6 @@ const newCommentNotification = async (
 			date: Date.now(),
 			text: text,
 		};
-		console.log(notification);
 		userToNotify.notifications.unshift(notification); // Add the new notification to the array
 		await userToNotify.save();
 		setNotificationToUnread(userToNotifyId);
