@@ -8,24 +8,59 @@ import {
   Header,
   Icon,
   Image,
+  Modal,
   Popup,
   Segment,
 } from 'semantic-ui-react';
 import PostCommnets from './PostCommnets';
 import CommentInputFeild from './CommentInputFeild';
 import { deletePost, likePost } from '@/utils/postActions';
+import LikesList from './LikesList';
+import ImageModal from './ImageModal';
+import NOImageModal from './NOImageModal';
 
 const CardPost = ({ post, user, setPosts, setShowToaster }) => {
   const [likes, setLikes] = useState(post.likes);
   const [comments, setComments] = useState(post.comments);
   const [error, setError] = useState(null);
+
+  const [showModal, setShowModal] = useState(false);
   const isLiked =
     likes.length > 0 &&
     likes.filter((like) => like.user === user._id).length > 0;
+  const addPropsToModal = () => ({
+    post,
+    user,
+    setLikes,
+    likes,
+    isLiked,
+    comments,
+    setComments,
+  });
+
   return (
     <>
+      {showModal && (
+        <Modal
+          open={showModal}
+          closeIcon
+          closeOnDimmerClick
+          onClose={() => setShowModal(false)}
+        >
+          <Modal.Content>
+            {post.picUrl ? (
+              <ImageModal {...addPropsToModal()} />
+            ) : (
+              <NOImageModal {...addPropsToModal()} />
+            )}
+          </Modal.Content>
+        </Modal>
+      )}
       <Segment basic>
-        <Card color='teal' fluid>
+        <Card
+          color='teal'
+          fluid
+        >
           {post.picUrl && (
             <Image
               src={post.picUrl}
@@ -34,6 +69,7 @@ const CardPost = ({ post, user, setPosts, setShowToaster }) => {
               wrapped
               ui={false}
               alt='PostImage'
+              onClick={() => setShowModal(true)}
             />
           )}
           <Card.Content>
@@ -58,7 +94,10 @@ const CardPost = ({ post, user, setPosts, setShowToaster }) => {
                     />
                   }
                 >
-                  <Header as='h4' content='Are u sure' />
+                  <Header
+                    as='h4'
+                    content='Are u sure'
+                  />
                   <p>This action is irreversible</p>
                   <Button
                     color='red'
@@ -98,11 +137,16 @@ const CardPost = ({ post, user, setPosts, setShowToaster }) => {
                 likePost(post._id, user._id, setLikes, isLiked ? false : true)
               }
             />
-            {likes.length > 0 && (
-              <span className='spanLikesList'>
-                {`${likes.length} ${likes.length === 1 ? 'like' : 'likes'}`}
-              </span>
-            )}
+            <LikesList
+              postId={post._id}
+              trigger={
+                likes.length > 0 && (
+                  <span className='spanLikesList'>
+                    {`${likes.length} ${likes.length === 1 ? 'like' : 'likes'}`}
+                  </span>
+                )
+              }
+            />
             <Icon
               name='comment outline'
               style={{ marginLeft: '7px' }}
@@ -119,10 +163,16 @@ const CardPost = ({ post, user, setPosts, setShowToaster }) => {
                       user={user}
                       setComments={setComments}
                     />
-                  )
+                  ),
               )}
             {comments.length > 3 && (
-              <Button content='View More' color='teal' basic circular />
+              <Button
+                content='View More'
+                color='teal'
+                onClick={() => setShowModal(true)}
+                basic
+                circular
+              />
             )}
 
             <Divider hidden />

@@ -4,16 +4,16 @@ const Schema = mongoose.Schema;
 const FollowerSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'user',
   },
   followers: [
     {
-      user: { type: Schema.Types.ObjectId, ref: 'User' },
+      user: { type: Schema.Types.ObjectId, ref: 'user' },
     },
   ],
   following: [
     {
-      user: { type: Schema.Types.ObjectId, ref: 'User' },
+      user: { type: Schema.Types.ObjectId, ref: 'user' },
     },
   ],
 });

@@ -1,0 +1,5 @@
+{
+    "prettier.enable": true,
+    "reactSnippets.settings.prettierEnabled": false,
+    "prettier.trailingComma": "all"
+}
