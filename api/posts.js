@@ -228,7 +228,7 @@ router.post('/comment/:postId', authMiddleware, async (req, res) => {
 	try {
 		const { userId } = req;
 		const { text } = req.body;
-		console.log(text);
+		// console.log(text);
 		if (text.length < 1) {
 			return res.status(401).send('comment atleast 1 character');
 		}

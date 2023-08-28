@@ -134,6 +134,7 @@ const newFollowerNotification = async (userId, userToNotifyId) => {
 		return;
 	} catch (error) {
 		console.error(error);
+		2;
 	}
 };
 

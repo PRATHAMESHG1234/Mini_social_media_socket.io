@@ -7,6 +7,7 @@ const isEmail = require('validator/lib/isEmail');
 const UserModel = require('../models/UserModel');
 const FollowerModel = require('../models/FollowerModel');
 const NotificationModel = require('../models/NotificationModel');
+const ChatModel = require('../models/ChatModel');
 
 const authMiddleware = require('../middleware/authMiddleware');
 const regexusername = /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/;
@@ -47,13 +48,22 @@ router.post('/', async (req, res) => {
 		const notificationModel = await NotificationModel.findOne({
 			user: user._id,
 		});
-		console.log(notificationModel);
 		if (!notificationModel) {
 			const newNotificationModel = new NotificationModel({
 				user: user._id,
 				notifications: [],
 			});
 			await newNotificationModel.save();
+		}
+		const chatModel = await ChatModel.findOne({
+			user: user._id,
+		});
+		if (!chatModel) {
+			const newChatModel = new ChatModel({
+				user: user._id,
+				chats: [],
+			});
+			await newChatModel.save();
 		}
 
 		const payload = { userId: user._id };

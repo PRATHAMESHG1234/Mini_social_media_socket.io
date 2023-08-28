@@ -16,7 +16,11 @@ const {
 router.get('/:username', authMiddleware, async (req, res) => {
 	const { username } = req.params;
 	try {
-		const user = await UserModel.findOne({ username: username.toLowerCase() });
+		console.log('username', username);
+
+		const user = await UserModel.findOne({
+			username: username.toLowerCase(),
+		});
 		if (!user) {
 			return res.status(404).send('User not found');
 		}
@@ -24,7 +28,9 @@ router.get('/:username', authMiddleware, async (req, res) => {
 		const profile = await ProfileModel.findOne({ user: user._id }).populate(
 			'user',
 		);
-		const profileFollowStats = await FollowerModel.findOne({ user: user._id });
+		const profileFollowStats = await FollowerModel.findOne({
+			user: user._id,
+		});
 		return res.json({
 			profile,
 			followersLength:
@@ -88,7 +94,7 @@ router.get('/following/:userId', authMiddleware, async (req, res) => {
 		const user = await FollowerModel.findOne({ user: userId }).populate(
 			'following.user',
 		);
-		console.log(user);
+		// console.log(user);
 		if (!user) {
 			return res.status(404).send('User not found');
 		}
@@ -178,7 +184,7 @@ router.put('/unfollow/:userToUnFollowId', authMiddleware, async (req, res) => {
 router.post('/update', authMiddleware, async (req, res) => {
 	try {
 		const { userId } = req;
-		console.log(req.body);
+		// console.log(req.body);
 		const { bio, facebook, youtube, twitter, instagram, profilePicUrl } =
 			req.body;
 		let profilFields = {};

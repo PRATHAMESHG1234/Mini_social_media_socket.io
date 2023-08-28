@@ -23,7 +23,7 @@ const Following = ({
 					`${baseUrl}/api/profile/following/${profileUserId}`,
 					{ headers: { Authorization: Cookies.get('token') } },
 				);
-				console.log('data', res.data);
+				// console.log('data', res.data);
 				setFollowing(res.data);
 			} catch (error) {
 				alert('Error Loading Followings');

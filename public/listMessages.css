@@ -45,3 +45,18 @@ span.other {
   font-size: 14px;
   color: grey;
 }
+
+
+@keyframes example-animation {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.icon.animated-icon {
+  background: linear-gradient(45deg, rgba(0, 255, 0, 1), rgba(0, 200, 0, 0.8));
+  color: transparent; /* Hide the default icon color */
+  -webkit-background-clip: text; /* Apply the gradient to the text (icon) */
+  background-clip: text; 
+  animation: example-animation 1s infinite;
+}

@@ -25,7 +25,7 @@ const Followers = ({
 				);
 
 				setFollowers(res.data);
-				console.log('followers:', res.data);
+				// console.log('followers:', res.data);
 			} catch (error) {
 				alert('Error Loading Followers');
 			}

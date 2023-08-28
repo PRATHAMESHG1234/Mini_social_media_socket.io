@@ -6,7 +6,8 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 let cancel;
 
-const SearchComponent = () => {
+const ChatListSearch = ({ chats, setChats }) => {
+	console.log(chats);
 	const [text, setText] = useState('');
 	const [loading, setLoading] = useState(false);
 	const [results, setResults] = useState([]);
@@ -42,6 +43,29 @@ const SearchComponent = () => {
 		}
 		setLoading(false);
 	};
+
+	const addChat = (result) => {
+		console.log('chats:', chats);
+		const alreadyInChat =
+			chats.length > 0 &&
+			chats.filter((chat) => chat.messagesWith === result._id).length > 0;
+		console.log('alreadyInChat:', alreadyInChat);
+		if (!alreadyInChat) {
+			return router.push(`/messages?message=${result._id}`);
+		} else {
+			const newChat = {
+				messagesWith: result._id,
+				name: result.name,
+				profilePicUrl: result.profilePicUrl,
+				lastMessages: '',
+				date: Date.now(),
+			};
+			setChats((prev) => [newChat, ...prev]);
+
+			return router.push(`/messages?message=${result._id}`);
+		}
+	};
+
 	useEffect(() => {
 		if (text.length === 0 && loading) {
 			setLoading(false);
@@ -57,11 +81,12 @@ const SearchComponent = () => {
 			loading={loading}
 			value={text}
 			resultRenderer={resultRenderer}
-			results={results}
+			results={results && results}
 			onSearchChange={handleChange}
 			minCharacters={1}
 			onResultSelect={(e, data) => {
-				router.push(`/${data.result.username}`);
+				console.log(data);
+				addChat(data.result);
 			}}
 		/>
 	);
@@ -86,4 +111,4 @@ const resultRenderer = ({ profilePicUrl, _id, name }) => {
 	);
 };
 
-export default SearchComponent;
+export default ChatListSearch;

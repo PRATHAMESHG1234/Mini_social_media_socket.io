@@ -8,46 +8,48 @@ import baseUrl from '@/utils/baseUrl';
 import { redirectUser } from '@/utils/authUser';
 
 MyApp.getInitialProps = async ({ Component, ctx }) => {
-  const { token } = parseCookies(ctx);
-  let pageProps = {};
+	const { token } = parseCookies(ctx);
+	let pageProps = {};
 
-  const protectedRouts =
-    ctx.pathname === '/' ||
-    ctx.pathname === '/[username]' ||
-    ctx.pathname === '/post/[postId]';
+	const protectedRouts =
+		ctx.pathname === '/' ||
+		ctx.pathname === '/messages' ||
+		ctx.pathname === '/[username]' ||
+		ctx.pathname === '/notifications' ||
+		ctx.pathname === '/post/[postId]';
 
-  if (!token) {
-    protectedRouts && redirectUser(ctx, '/login');
-  } else {
-    if (Component.getInitialProps) {
-      pageProps = await Component.getInitialProps(ctx);
-    }
-    try {
-      const res = await axios.get(`${baseUrl}/api/auth`, {
-        headers: { Authorization: token },
-      });
+	if (!token) {
+		protectedRouts && redirectUser(ctx, '/login');
+	} else {
+		if (Component.getInitialProps) {
+			pageProps = await Component.getInitialProps(ctx);
+		}
+		try {
+			const res = await axios.get(`${baseUrl}/api/auth`, {
+				headers: { Authorization: token },
+			});
 
-      const { user, userFollowStats } = res.data;
+			const { user, userFollowStats } = res.data;
 
-      if (user) !protectedRouts && redirectUser(ctx, '/');
+			if (user) !protectedRouts && redirectUser(ctx, '/');
 
-      pageProps.user = user;
-      pageProps.userFollowStats = userFollowStats;
-    } catch (error) {
-      destroyCookie(ctx, 'token');
-      redirectUser(ctx, '/login');
-    }
-  }
+			pageProps.user = user;
+			pageProps.userFollowStats = userFollowStats;
+		} catch (error) {
+			destroyCookie(ctx, 'token');
+			redirectUser(ctx, '/login');
+		}
+	}
 
-  return { pageProps };
+	return { pageProps };
 };
 
 function MyApp({ Component, pageProps }) {
-  return (
-    <Layout {...pageProps}>
-      <Component {...pageProps} />
-    </Layout>
-  );
+	return (
+		<Layout {...pageProps}>
+			<Component {...pageProps} />
+		</Layout>
+	);
 }
 
 export default MyApp;

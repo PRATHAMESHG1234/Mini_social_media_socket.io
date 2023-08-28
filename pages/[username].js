@@ -31,7 +31,8 @@ const ProfilePage = ({
 	const [loggedUserFollowStats, setLoggedUserFollowStats] =
 		useState(userFollowStats);
 	const [showToaster, setShowToaster] = useState(false);
-	const ownAccount = profile.user._id === user._id;
+	const ownAccount = profile?.user?._id === user?._id;
+
 	const handleItemClick = (item) => {
 		setActiveItem(item);
 	};
@@ -139,7 +140,11 @@ const ProfilePage = ({
 ProfilePage.getInitialProps = async (ctx) => {
 	try {
 		const { username } = ctx.query;
+		if (username === 'socket.io') {
+			throw new Error('Invalid username'); // You should throw an instance of Error class
+		}
 		const { token } = parseCookies(ctx);
+		console.log('username name', username);
 		const res = await axios.get(`${baseUrl}/api/profile/${username}`, {
 			headers: { Authorization: token },
 		});
