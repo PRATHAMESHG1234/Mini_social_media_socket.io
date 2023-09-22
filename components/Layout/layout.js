@@ -1,107 +1,93 @@
-import React, { createRef, useEffect } from 'react';
-import Navbar from './Navbar';
-import {
-	Container,
-	Grid,
-	Ref,
-	Segment,
-	Sticky,
-	Visibility,
-} from 'semantic-ui-react';
-import HeadTags from './HeadTags';
-import nprogress from 'nprogress';
-import Router, { useRouter } from 'next/router';
-import SideMenu from './SideMenu';
-import Search from './Search';
+import { useEffect } from "react";
+import HeadTags from "./HeadTags";
+import nprogress from "nprogress";
+import { useRouter } from "next/router";
+import { Container, Grid } from "semantic-ui-react";
+import SideMenu from "./SideMenu";
+import Search from "./Search";
+import Navbar from "./Navbar";
+import MobileHeader from "./MobileHeader";
 
 function Layout({ children, user }) {
-	const router = useRouter();
-	const contextRef = createRef();
-	const messagesRoute = router.pathname === '/messages';
-	useEffect(() => {
-		const handleRouteChangeStart = () => {
-			nprogress.start();
-		};
+  const router = useRouter();
 
-		const handleRouteChangeComplete = () => {
-			nprogress.done();
-		};
+  const messagesRoute = router.pathname === "/messages";
 
-		const handleRouteChangeError = () => {
-			nprogress.done();
-		};
+  useEffect(() => {
+    /** @type {Array<import("next/router").RouterEvent>} */
+    const events = [
+      "routeChangeStart",
+      "routeChangeComplete",
+      "routeChangeError",
+    ];
 
-		Router.events.on('routeChangeStart', handleRouteChangeStart);
-		Router.events.on('routeChangeComplete', handleRouteChangeComplete);
-		Router.events.on('routeChangeError', handleRouteChangeError);
+    events.forEach((event, i) =>
+      router.events.on(event, i === 0 ? nprogress.start : nprogress.done),
+    );
 
-		return () => {
-			Router.events.off('routeChangeStart', handleRouteChangeStart);
-			Router.events.off('routeChangeComplete', handleRouteChangeComplete);
-			Router.events.off('routeChangeError', handleRouteChangeError);
-		};
-	}, []);
+    return () => {
+      events.forEach((event, i) =>
+        router.events.off(event, i === 0 ? nprogress.start : nprogress.done),
+      );
+    };
+  }, [router]);
 
-	return (
-		<>
-			<HeadTags />
-			{user ? (
-				<>
-					<div style={{ marginLeft: '1rem', marginRight: '1rem' }}>
-						<Ref innerRef={contextRef}>
-							<Grid>
-								{!messagesRoute ? (
-									<>
-										{' '}
-										<Grid.Column
-											floated='left'
-											width={2}
-										>
-											<Sticky context={contextRef}>
-												<SideMenu user={user} />
-											</Sticky>
-										</Grid.Column>
-										<Grid.Column width={10}>
-											<Visibility context={contextRef}>{children}</Visibility>
-										</Grid.Column>
-										<Grid.Column
-											floated='left'
-											width={4}
-										>
-											<Sticky context={contextRef}>
-												<Segment basic>
-													<Search />
-												</Segment>
-											</Sticky>
-										</Grid.Column>
-									</>
-								) : (
-									<>
-										<Grid.Column
-											floated='left'
-											width={1}
-										/>
-										<Grid.Column width={15}>{children}</Grid.Column>
-									</>
-								)}
-							</Grid>
-						</Ref>
-					</div>
-				</>
-			) : (
-				<>
-					<Navbar />
+  return (
+    <>
+      <HeadTags />
+      {user ? (
+        <>
+          <div style={{ marginLeft: "1rem", marginRight: "2rem" }}>
+            <Grid>
+              {!messagesRoute ? (
+                <>
+                  <Grid.Row only="mobile">
+                    <MobileHeader user={user} />
+                  </Grid.Row>
 
-					<Container
-						style={{ paddingTop: '1rem' }}
-						text
-					>
-						{children}
-					</Container>
-				</>
-			)}
-		</>
-	);
+                  <Grid.Column
+                    only="tablet computer"
+                    className="menuCol"
+                    floated="left"
+                    tablet={1}
+                    computer={2}
+                  >
+                    <SideMenu user={user} />
+                  </Grid.Column>
+
+                  <Grid.Column mobile={16} tablet={15} computer={12}>
+                    {children}
+                  </Grid.Column>
+
+                  <Grid.Column
+                    className="menuCol searchCol"
+                    computer={2}
+                    only="computer"
+                  >
+                    <div className="stickyCol">
+                      <Search />
+                    </div>
+                  </Grid.Column>
+                </>
+              ) : (
+                <>
+                  <Grid.Column floated="left" width={1} />
+                  <Grid.Column width={15}>{children}</Grid.Column>
+                </>
+              )}
+            </Grid>
+          </div>
+        </>
+      ) : (
+        <>
+          <Navbar />
+          <Container text style={{ paddingTop: "1rem" }}>
+            {children}
+          </Container>
+        </>
+      )}
+    </>
+  );
 }
 
 export default Layout;

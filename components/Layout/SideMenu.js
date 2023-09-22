@@ -1,106 +1,84 @@
-import { logoutUser } from '@/utils/authUser';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import React from 'react';
-import { Icon, List } from 'semantic-ui-react';
+import { useCallback } from "react";
+import { Icon, Grid } from "semantic-ui-react";
+import { useRouter } from "next/router";
+import { logoutUser } from "../../utils/authUser";
 
-const SideMenu = ({
-  user: { unreadNotification, unreadMessage, email, username },
+const MenuRow = ({
+  menuName,
+  href,
+  iconName,
+  active = false,
+  children,
+  ...props
 }) => {
   const router = useRouter();
+  const isActive = useCallback(() => {
+    return router.pathname === href || active;
+  }, [router, active, href]);
 
-  const isActive = (route) => router.pathname === route;
+  // prettier-ignore
+  const push = useCallback(e => {
+    e.preventDefault();
+    router.push(e.currentTarget.href);
+  }, [router]);
+
+  const common = { as: "a", onClick: push, href, ...props };
 
   return (
-    <>
-      <List
-        style={{ paddingTop: '1rem' }}
-        size='big'
-        verticalAlign='middle'
-        selection
-      >
-        <List.Item active={isActive('/')}>
-          <Link href='/' style={{ display: 'flex', alignItems: 'center' }}>
-            <Icon
-              name='home'
-              size='large'
-              color={isActive('/') ? 'teal' : undefined}
-            />
-            <List.Content floated='right'>
-              <List.Header content='Home' />
-            </List.Content>
-          </Link>
-        </List.Item>
-        <br />
-        <List.Item active={isActive('/messages')}>
-          <Link
-            href='/messages'
-            style={{ display: 'flex', alignItems: 'center' }}
-          >
-            <Icon
-              name={unreadMessage ? 'hand point right' : 'mail'}
-              size='large'
-              color={
-                isActive('/messages')
-                  ? 'teal'
-                  : unreadMessage
-                  ? 'orange'
-                  : undefined
-              }
-            />
-            <List.Content floated='right'>
-              <List.Header content='Messages' />
-            </List.Content>
-          </Link>
-        </List.Item>
-        <br />
-        <List.Item active={isActive('/notifications')}>
-          <Link
-            href='/notifications'
-            style={{ display: 'flex', alignItems: 'center' }}
-          >
-            <Icon
-              name={unreadNotification ? 'hand point right' : 'bell'}
-              size='large'
-              color={
-                isActive('/notifications')
-                  ? 'teal'
-                  : unreadNotification
-                  ? 'orange'
-                  : undefined
-              }
-            />
-            <List.Content floated='right'>
-              <List.Header content='Notifications' />
-            </List.Content>
-          </Link>
-        </List.Item>
-        <br />
-        <List.Item active={router.query.username === username}>
-          <Link
-            href={`/${username}`}
-            style={{ display: 'flex', alignItems: 'center' }}
-          >
-            <Icon
-              name='user'
-              size='large'
-              color={router.query.username === username ? 'teal' : undefined}
-            />
-            <List.Content floated='right'>
-              <List.Header content='Account' />
-            </List.Content>
-          </Link>
-        </List.Item>
-        <br />
-        <List.Item onClick={() => logoutUser(email)}>
-          <Icon name='log out' size='large' />
-          <List.Content>
-            <List.Header content='Logout' />
-          </List.Content>
-        </List.Item>
-      </List>
-    </>
+    <Grid.Row {...common} className={`menuRow ${isActive() ? "active" : ""}`}>
+      <Grid.Column>
+        {children}
+        <Icon
+          name={iconName}
+          size="large"
+          {...(isActive() && { color: "teal" })}
+        />
+      </Grid.Column>
+
+      {menuName ? <Grid.Column only="computer">{menuName}</Grid.Column> : <></>}
+    </Grid.Row>
   );
 };
+
+function SideMenu({
+  user: { unreadNotification, email, unreadMessage, username },
+}) {
+  const router = useRouter();
+
+  return (
+    <div className="stickyCol">
+      <Grid>
+        <MenuRow href="/" menuName="Home" iconName="home" />
+
+        <MenuRow only="mobile tablet" iconName="search" href="/search" />
+
+        <MenuRow iconName="mail outline" menuName="Messages" href="/messages">
+          {unreadMessage ? <div className="menuIconBadge" /> : <></>}
+        </MenuRow>
+
+        <MenuRow
+          menuName="Notifications"
+          iconName="bell outline"
+          href="/notifications"
+        >
+          {unreadNotification ? <div className="menuIconBadge" /> : <></>}
+        </MenuRow>
+
+        <MenuRow
+          menuName="Account"
+          iconName="user"
+          href={`/${username}`}
+          active={router.query.username === username}
+        />
+
+        <MenuRow
+          menuName="Logout"
+          iconName="log out"
+          onClick={() => logoutUser(email)}
+        />
+      </Grid>
+    </div>
+  );
+}
 
 export default SideMenu;
