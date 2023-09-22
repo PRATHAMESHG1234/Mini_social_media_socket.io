@@ -8,7 +8,7 @@
 
   "scripts": {
 
-    "dev": "nodemon ./servers/index.js",
+    "dev": "nodemon ./server.js",
 
     "build": "next build",
 
@@ -50,7 +50,7 @@
 
     "next": "^13.4.6",
 
-    "nodemailer": "^6.9.3",
+    "nodemailer": "^6.9.5",
 
     "nodemailer-sendgrid-transport": "^0.2.0",
 

@@ -1,14 +1,14 @@
-import axios from 'axios';
-import baseUrl from './baseUrl';
-import catchErrors from './catchErrors';
-import Router from 'next/router';
-import Cookies from 'js-cookie';
+import axios from "axios";
+import baseUrl from "./baseUrl";
+import catchErrors from "./catchErrors";
+import Router from "next/router";
+import Cookies from "js-cookie";
 
 export const registerUser = async (
   user,
   profilePicUrl,
   setError,
-  setLoading
+  setLoading,
 ) => {
   try {
     const res = await axios.post(`${baseUrl}/api/signup`, {
@@ -24,10 +24,9 @@ export const registerUser = async (
 };
 export const loginUser = async (user, setError, setLoading) => {
   setLoading(true);
+  console.log(user);
   try {
-    const res = await axios.post(`${baseUrl}/api/auth`, {
-      user,
-    });
+    const res = await axios.post(`${baseUrl}/api/auth`, user);
     setToken(res.data);
   } catch (error) {
     const errorMsg = catchErrors(error);
@@ -44,12 +43,12 @@ export const redirectUser = (ctx, location) => {
   }
 };
 export const logoutUser = (email) => {
-  Cookies.set('userEmail', email);
-  Cookies.remove('token');
-  Router.push('/login');
+  Cookies.set("userEmail", email);
+  Cookies.remove("token");
+  Router.push("/login");
   Router.reload();
 };
 const setToken = (token) => {
-  Cookies.set('token', token);
-  Router.push('/');
+  Cookies.set("token", token);
+  Router.push("/");
 };

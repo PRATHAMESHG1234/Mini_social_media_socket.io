@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-require('dotenv').config({ path: './config.env' });
+const mongoose = require("mongoose");
+require("dotenv").config({ path: "./config.env" });
 
 async function connectDb() {
   try {
@@ -9,11 +9,11 @@ async function connectDb() {
     });
 
     // Set the strictQuery option to false to prepare for the future change
-    mongoose.set('strictQuery', false);
+    mongoose.set("strictQuery", false);
 
-    console.log('MongoDB connected');
+    console.log("MongoDB connected");
   } catch (error) {
-    console.log('MongoDB connection error:', error);
+    console.log("MongoDB connection error:", error);
     process.exit(1);
   }
 }
