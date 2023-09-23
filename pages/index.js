@@ -19,6 +19,7 @@ import Cookies from "js-cookie";
 import getUserInfo from "@/utils/getUserInfo";
 import MessageNotificationModal from "@/components/Home/MessageNotificationModal";
 import newMsgSound from "@/utils/newMsgSound";
+import NotificationPortal from "@/components/Home/NotificationPortal";
 Index.getInitialProps = async (ctx) => {
   try {
     const { token } = parseCookies(ctx);
@@ -41,6 +42,9 @@ function Index({ user, postData, errorLoading }) {
 
   const [newMessageReceived, setNewMessageReceived] = useState(null);
   const [newMessageModal, setNewMessageModal] = useState(false);
+
+  const [newNotification, setNewNotification] = useState(null);
+  const [notificationPopup, showNotificationPopup] = useState(false);
 
   useEffect(() => {
     if (!socket.current) {
@@ -88,8 +92,34 @@ function Index({ user, postData, errorLoading }) {
       alert("Error Fetching Posts");
     }
   };
+
+  useEffect(() => {
+    if (socket.current) {
+      socket.current.on(
+        "newNotificationRecieved",
+        ({ name, profilePicUrl, username, postId }) => {
+          setNewNotification({ name, profilePicUrl, username, postId });
+
+          showNotificationPopup(true);
+          newMsgSound(name);
+          setTimeout(() => {
+            showNotificationPopup(false);
+          }, 5000);
+        },
+      );
+    }
+  }, []);
+
   return (
     <>
+      {notificationPopup && newNotification !== null && (
+        <NotificationPortal
+          newNotification={newNotification}
+          notificationPopup={notificationPopup}
+          showNotificationPopup={showNotificationPopup}
+        />
+      )}
+
       {showToaster && <PostDeleteToastr />}
       {newMessageModal && newMessageModal !== null && (
         <MessageNotificationModal
@@ -115,6 +145,7 @@ function Index({ user, postData, errorLoading }) {
           >
             {posts.map((post) => (
               <CardPost
+                socket={socket}
                 key={post._id}
                 post={post}
                 user={user}

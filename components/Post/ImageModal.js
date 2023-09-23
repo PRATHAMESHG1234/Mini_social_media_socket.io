@@ -1,11 +1,11 @@
-import React from 'react';
-import { Card, Divider, Grid, Icon, Image, Modal } from 'semantic-ui-react';
-import CommentInputFeild from './CommentInputFeild';
-import calculateTime from '@/utils/calculateTime';
-import PostCommnets from './PostCommnets';
-import { likePost } from '@/utils/postActions';
-import Link from 'next/link';
-import LikesList from './LikesList';
+import React from "react";
+import { Card, Divider, Grid, Icon, Image, Modal } from "semantic-ui-react";
+import CommentInputFeild from "./CommentInputField";
+import calculateTime from "@/utils/calculateTime";
+import PostCommnets from "./PostComments";
+import { likePost } from "@/utils/postActions";
+import Link from "next/link";
+import LikesList from "./LikesList";
 
 const ImageModal = ({
   post,
@@ -18,28 +18,16 @@ const ImageModal = ({
 }) => {
   return (
     <>
-      <Grid
-        columns={2}
-        stackable
-        relaxed
-      >
+      <Grid columns={2} stackable relaxed>
         <Grid.Column>
           <Modal.Content image>
-            <Image
-              wrapped
-              size='large'
-              src={post.picUrl}
-            />
+            <Image wrapped size="large" src={post.picUrl} />
           </Modal.Content>
         </Grid.Column>
         <Grid.Column>
           <Card fluid>
             <Card.Content>
-              <Image
-                floated='left'
-                avatar
-                src={post.user.profilePicUrl}
-              />
+              <Image floated="left" avatar src={post.user.profilePicUrl} />
               <Card.Header>
                 <Link href={`/${post.user.username}`}>
                   <p> {post.user.name}</p>
@@ -49,9 +37,9 @@ const ImageModal = ({
               {post.location && <Card.Meta content={post.location} />}
               <Card.Description
                 style={{
-                  fontSize: '17px',
-                  letterSpacing: '0.1px',
-                  wordSpacing: '0.35px',
+                  fontSize: "17px",
+                  letterSpacing: "0.1px",
+                  wordSpacing: "0.35px",
                 }}
               >
                 {post.text}
@@ -59,9 +47,9 @@ const ImageModal = ({
             </Card.Content>
             <Card.Content extra>
               <Icon
-                name={isLiked ? 'heart' : 'heart outline'}
-                color='red'
-                style={{ cursor: 'pointer' }}
+                name={isLiked ? "heart" : "heart outline"}
+                color="red"
+                style={{ cursor: "pointer" }}
                 onClick={() =>
                   likePost(post._id, user._id, setLikes, isLiked ? false : true)
                 }
@@ -70,9 +58,9 @@ const ImageModal = ({
                 postId={post._id}
                 trigger={
                   likes.length > 0 && (
-                    <span className='spanLikesList'>
+                    <span className="spanLikesList">
                       {`${likes.length} ${
-                        likes.length === 1 ? 'like' : 'likes'
+                        likes.length === 1 ? "like" : "likes"
                       }`}
                     </span>
                   )
@@ -83,9 +71,9 @@ const ImageModal = ({
 
               <div
                 style={{
-                  overflow: 'auto',
-                  height: comments.length > 2 ? '200px' : '60px',
-                  marginBottom: '8px',
+                  overflow: "auto",
+                  height: comments.length > 2 ? "200px" : "60px",
+                  marginBottom: "8px",
                 }}
               >
                 {comments.length > 0 &&

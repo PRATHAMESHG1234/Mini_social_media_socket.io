@@ -19,6 +19,7 @@ const {
   setMessageToUnread,
   deleteMessage,
 } = require("./utilsServer/messageActions");
+const { likeOrUnlikePost } = require("./utilsServer/likeOrUnlikePost");
 const dev = process.env.NODE_ENV !== "production";
 const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
@@ -80,6 +81,32 @@ io.on("connection", (socket) => {
 
       // Optionally, you can store the interval ID in the socket object
       socket.interval = interval;
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
+  socket.on("likePost", async ({ postId, userId, like }) => {
+    try {
+      const { success, name, profilePicUrl, username, postByUserId, error } =
+        await likeOrUnlikePost(postId, userId, like);
+
+      if (success) {
+        socket.emit("postLiked");
+        if (postByUserId !== userId) {
+          const receiverSocket = findConnectedUser(postByUserId);
+
+          if (receiverSocket && like) {
+            //WHEN WE WANT SEND NOTIFICATION FOR PERTICULAR CLIENT
+            io.to(receiverSocket.socketId).emit("newNotificationRecieved", {
+              name,
+              profilePicUrl,
+              username,
+              postId,
+            });
+          }
+        }
+      }
     } catch (error) {
       console.error(error);
     }

@@ -1,6 +1,7 @@
 import React from "react";
 import "react-toastify/dist/ReactToastify.css";
 import "semantic-ui-css/semantic.min.css";
+import "cropperjs/dist/cropper.css";
 import Layout from "@/components/Layout/Layout";
 import { destroyCookie, parseCookies } from "nookies";
 import axios from "axios";

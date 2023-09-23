@@ -3,6 +3,9 @@
 :root {
   --progressBar: #54d1db;
 }
+/* body{
+  overflow: hidden;
+} */
 .absolute {
   position: absolute !important;
 }
